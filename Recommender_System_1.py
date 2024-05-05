@@ -69,6 +69,17 @@ metrics = tfrs.metrics.FactorizedTopK(
     k = 100
 )
 
+task = tfrs.tasks.Retrieval(
+    metrics=metrics
+)
+
+class MovielensModel(tfrs.Model):
+    def __init__(self, user_model, movie_model):
+        super().__init__()
+        self.movie.model: tf.keras.Model = movie_model
+        self.user_model: tf.keras.Model = user_model
+        self.task: tf.keras.layers.Layer = task
+
 
 
 
