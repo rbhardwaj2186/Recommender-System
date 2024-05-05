@@ -49,5 +49,14 @@ unique_user_ids = np.unique(np.array(list(user_ids.as_numpy_iterator())))
 
 print(unique_movie_titles[:4])
 
+user_model = tf.keras.Sequential([
+    tf.keras.layers.experimental.preprocessing.StringLookup(
+        vocabulary=unqiue_user_ids, mask_token=None),
+    # For unknown tokens, we add an additional embedding!
+     tf.keras.layers.Embedding(len(unique_user_ids)+1, embedding_dimenson)
+
+])
+
+
 
 
