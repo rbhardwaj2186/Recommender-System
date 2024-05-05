@@ -51,11 +51,23 @@ print(unique_movie_titles[:4])
 
 user_model = tf.keras.Sequential([
     tf.keras.layers.experimental.preprocessing.StringLookup(
-        vocabulary=unqiue_user_ids, mask_token=None),
+        vocabulary=unique_user_ids, mask_token=None),
     # For unknown tokens, we add an additional embedding!
      tf.keras.layers.Embedding(len(unique_user_ids)+1, embedding_dimenson)
 
 ])
+
+movie_model = tf.keras.Sequential([
+    tf.keras.layers.experimental.preprocessing.StringLookup(
+        vocabulary=unique_movie_titles, mask_token=None),
+    tf.keras.layers.Embedding(len(unique_movie_titles)+1, embedding_dimension)
+
+])
+
+metrics = tfrs.metrics.FactorizedTopK(
+    candidates = movies.batch(128).map(movie_model),
+    k = 100
+)
 
 
 
