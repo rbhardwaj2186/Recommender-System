@@ -96,6 +96,17 @@ model.compile(optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.1))
 cached_train = train.shuffle(100_000).batch(8192).cache()
 cached_test = test.batch(4096).cache()
 
+mode.fit(cached_train, epochs=2)
+
+model.evaluate(cached_test, return_dict=True)
+
+# Create a model that takes in raw query features, and
+index = tfrs.layers.factorized_top_k.BruteForce(model.user_model)
+# recommends movies out of the entire movie dataset.
+index.index(movie.batch(100).map(model.movie_model), movies)
+
+
+
 
 
 
