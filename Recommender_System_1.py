@@ -80,6 +80,22 @@ class MovielensModel(tfrs.Model):
         self.user_model: tf.keras.Model = user_model
         self.task: tf.keras.layers.Layer = task
 
+    def compute_loss(self, features: Dict[Text, tf.Tensor], training=False) -> tf.Tensor:
+        # We pick out the user features and pass them into the user model.
+        user_embeddings = self.user_model(features["user_id"])
+        # And pick out the movie features and pass them into the movie model,
+        # getting embeddings back
+        positive_movie_embeddings = self.movie_model(features["movie_title"])
+
+        # The task computes the loss and the metrics
+        return self.task(user_embeddings, positive_movie_embeddings)
+
+model = MovielensModel(user_model, movie_model)
+model.compile(optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.1))
+
+cached_train = train.shuffle(100_000).batch(8192).cache()
+cached_test = test.batch(4096).cache()
+
 
 
 
